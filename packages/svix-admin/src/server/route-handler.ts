@@ -108,7 +108,6 @@ export async function handler(
       if (!appId) return err('appId required', 400)
 
       const fields = endpointFields(body)
-      console.log('[svix-admin] endpoint.create payload:', JSON.stringify(fields))
       const endpoint = await svix.endpoint.create(appId, fields)
 
       if (headers && Object.keys(headers).length > 0) {
