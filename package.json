@@ -1,0 +1,13 @@
+{
+  "name": "svix-admin-workspace",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace=packages/svix-admin",
+    "dev": "npm run dev --workspace=apps/demo",
+    "demo": "npm run dev --workspace=apps/demo"
+  }
+}
