@@ -8,7 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "svix-admin": "*",
+    "@srayner02/svix-admin": "*",
     "next": "^15.1.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

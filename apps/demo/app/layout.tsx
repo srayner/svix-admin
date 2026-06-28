@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import 'svix-admin/styles.css'
+import '@srayner02/svix-admin/styles.css'
 import './globals.css'
 
 export const metadata: Metadata = {

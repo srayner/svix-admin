@@ -1,4 +1,4 @@
-import { SvixAdmin } from 'svix-admin'
+import { SvixAdmin } from '@srayner02/svix-admin'
 
 const eventTypes = [
   {

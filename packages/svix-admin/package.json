@@ -1,7 +1,8 @@
 {
-  "name": "svix-admin",
+  "name": "@srayner02/svix-admin",
   "version": "1.0.0",
   "description": "Embeddable Svix webhook admin UI for Next.js",
+  "keywords": ["svix", "webhooks", "react", "nextjs", "admin", "ui"],
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -19,6 +20,10 @@
     "./styles.css": "./dist/styles.css"
   },
   "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
   "engines": {
     "node": ">=18.0.0"
   },

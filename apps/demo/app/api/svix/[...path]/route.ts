@@ -1,1 +1,1 @@
-export { GET, POST, PATCH, DELETE } from 'svix-admin/server'
+export { GET, POST, PATCH, DELETE } from '@srayner02/svix-admin/server'

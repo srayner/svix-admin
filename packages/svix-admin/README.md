@@ -1,4 +1,4 @@
-# svix-admin
+# @srayner02/svix-admin
 
 An embeddable React admin UI for a self-hosted [Svix](https://www.svix.com/) webhook server. Drop it into any Next.js (App Router) application to give your users a full webhook management experience: create and configure endpoint URLs, filter by event type, set authentication headers, and test delivery — all without leaving your app.
 
@@ -14,7 +14,7 @@ An embeddable React admin UI for a self-hosted [Svix](https://www.svix.com/) web
 ## Installation
 
 ```bash
-npm install svix-admin svix
+npm install @srayner02/svix-admin svix
 ```
 
 > The `svix` package is needed both by the library's route handler and by your own server code when firing webhook events.
@@ -26,7 +26,7 @@ npm install svix-admin svix
 Create `app/api/svix/[...path]/route.ts`:
 
 ```ts
-export { GET, POST, PATCH, DELETE } from 'svix-admin/server'
+export { GET, POST, PATCH, DELETE } from '@srayner02/svix-admin/server'
 ```
 
 Add your Svix credentials to `.env.local`:
@@ -41,13 +41,13 @@ SVIX_API_TOKEN=your-token-here
 In your root `app/layout.tsx`:
 
 ```ts
-import 'svix-admin/styles.css'
+import '@srayner02/svix-admin/styles.css'
 ```
 
 ### 3. Render the component
 
 ```tsx
-import { SvixAdmin } from 'svix-admin'
+import { SvixAdmin } from '@srayner02/svix-admin'
 import { eventTypes } from './events.config'
 
 export default function WebhooksPage() {
@@ -65,7 +65,7 @@ The API route handler at `/api/svix/[...path]` should also be protected — it p
 
 ```ts
 // app/api/svix/[...path]/route.ts
-import { handler } from 'svix-admin/server'
+import { handler } from '@srayner02/svix-admin/server'
 import { requireAdmin } from '@/lib/auth'
 
 export async function GET(req: Request, ctx: { params: Promise<{ path: string[] }> }) {
@@ -106,7 +106,7 @@ Create a config file alongside your component:
 
 ```ts
 // events.config.ts
-import type { EventTypeConfig } from 'svix-admin'
+import type { EventTypeConfig } from '@srayner02/svix-admin'
 
 export const eventTypes: EventTypeConfig[] = [
   {
@@ -156,7 +156,7 @@ The `schema` follows the [OpenAPI 3.0 Schema Object](https://swagger.io/specific
 
 ## Firing Webhooks from Your Application
 
-`svix-admin` provides the admin UI only. When something happens in your application (an order is created, a payment fails, etc.) you fire the event from your own server code using the Svix SDK directly:
+`@srayner02/svix-admin` provides the admin UI only. When something happens in your application (an order is created, a payment fails, etc.) you fire the event from your own server code using the Svix SDK directly:
 
 ```ts
 // e.g. in an API route, server action, or background job

@@ -1,7 +1,7 @@
 import type { NextConfig } from 'next'
 
 const config: NextConfig = {
-  transpilePackages: ['svix-admin'],
+  transpilePackages: ['@srayner02/svix-admin'],
 }
 
 export default config
