@@ -93,6 +93,14 @@ export async function handler(
       return json(result)
     }
 
+    // GET /endpoints/:id/secret?appId=xxx
+    if (segment === 'endpoints' && id && sub === 'secret' && method === 'GET') {
+      const appId = new URL(req.url).searchParams.get('appId')
+      if (!appId) return err('appId required', 400)
+      const result = await svix.endpoint.getSecret(appId, id)
+      return json({ key: result.key })
+    }
+
     // GET /endpoints?appId=xxx
     if (segment === 'endpoints' && !id && method === 'GET') {
       const appId = new URL(req.url).searchParams.get('appId')

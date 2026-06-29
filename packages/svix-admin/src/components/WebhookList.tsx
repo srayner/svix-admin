@@ -1,13 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import { Pencil, Trash2, Plus, RefreshCw, AlertCircle, FlaskConical } from 'lucide-react'
+import { Pencil, Trash2, Plus, RefreshCw, AlertCircle, FlaskConical, Key } from 'lucide-react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table'
 import { Button } from './ui/button'
 import { Badge } from './ui/badge'
 import { WebhookForm } from './WebhookForm'
 import { WebhookDeleteDialog } from './WebhookDeleteDialog'
 import { WebhookTestDialog } from './WebhookTestDialog'
+import { WebhookSecretDialog } from './WebhookSecretDialog'
 import { useSvixAdmin } from '../context'
 import { useEndpoints } from '../hooks/use-endpoints'
 import type { SvixEndpoint } from '../types'
@@ -22,6 +23,8 @@ export function WebhookList() {
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [testTarget, setTestTarget] = useState<SvixEndpoint | null>(null)
   const [testOpen, setTestOpen] = useState(false)
+  const [secretTarget, setSecretTarget] = useState<SvixEndpoint | null>(null)
+  const [secretOpen, setSecretOpen] = useState(false)
 
   function openCreate() {
     setEditTarget(null)
@@ -41,6 +44,11 @@ export function WebhookList() {
   function openTest(ep: SvixEndpoint) {
     setTestTarget(ep)
     setTestOpen(true)
+  }
+
+  function openSecret(ep: SvixEndpoint) {
+    setSecretTarget(ep)
+    setSecretOpen(true)
   }
 
   async function handleSubmit(payload: Parameters<typeof create>[0]) {
@@ -95,7 +103,7 @@ export function WebhookList() {
               <TableHead>URL</TableHead>
               <TableHead>Events</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead className="w-20" />
+              <TableHead className="w-28" />
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -132,6 +140,16 @@ export function WebhookList() {
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-1">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => openSecret(ep)}
+                      aria-label="View signing secret"
+                      title="View signing secret"
+                      className="text-muted-foreground hover:text-foreground"
+                    >
+                      <Key className="h-4 w-4" />
+                    </Button>
                     <Button
                       variant="ghost"
                       size="icon"
@@ -186,6 +204,12 @@ export function WebhookList() {
         endpoint={testTarget}
         open={testOpen}
         onOpenChange={setTestOpen}
+      />
+
+      <WebhookSecretDialog
+        endpoint={secretTarget}
+        open={secretOpen}
+        onOpenChange={setSecretOpen}
       />
     </div>
   )

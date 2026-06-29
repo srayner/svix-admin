@@ -23,6 +23,7 @@ const { svixMock } = vi.hoisted(() => {
       getHeaders: vi.fn().mockResolvedValue({ headers: {} }),
       updateHeaders: vi.fn().mockResolvedValue({}),
       sendExample: vi.fn().mockResolvedValue({ id: 'msg_1' }),
+      getSecret: vi.fn().mockResolvedValue({ key: 'whsec_test123' }),
     },
   }
   return { svixMock }
@@ -66,6 +67,7 @@ beforeEach(() => {
   svixMock.endpoint.getHeaders.mockResolvedValue({ headers: {} })
   svixMock.endpoint.updateHeaders.mockResolvedValue({})
   svixMock.endpoint.sendExample.mockResolvedValue({ id: 'msg_1' })
+  svixMock.endpoint.getSecret.mockResolvedValue({ key: 'whsec_test123' })
   vi.clearAllMocks()
 })
 
@@ -214,6 +216,28 @@ describe('DELETE /endpoints/:id', () => {
     )
     expect(res.status).toBe(200)
     expect(svixMock.endpoint.delete).toHaveBeenCalledWith('app_1', 'ep_1')
+  })
+})
+
+describe('GET /endpoints/:id/secret', () => {
+  it('returns the signing secret for an endpoint', async () => {
+    svixMock.endpoint.getSecret.mockResolvedValue({ key: 'whsec_test123' })
+    const res = await handler(
+      req('GET', 'endpoints/ep_1/secret?appId=app_1'),
+      ctx('endpoints/ep_1/secret')
+    )
+    const data = await res.json()
+    expect(res.status).toBe(200)
+    expect(data.key).toBe('whsec_test123')
+    expect(svixMock.endpoint.getSecret).toHaveBeenCalledWith('app_1', 'ep_1')
+  })
+
+  it('returns 400 when appId is missing', async () => {
+    const res = await handler(
+      req('GET', 'endpoints/ep_1/secret'),
+      ctx('endpoints/ep_1/secret')
+    )
+    expect(res.status).toBe(400)
   })
 })
 

@@ -1,11 +1,16 @@
 {
   "name": "@srayner02/svix-admin",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Embeddable Svix webhook admin UI for Next.js",
   "keywords": ["svix", "webhooks", "react", "nextjs", "admin", "ui"],
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "server": ["./dist/server.d.ts"]
+    }
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -31,7 +36,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup && npm run build:css",
+    "build": "rm -rf dist && tsup && npm run build:css",
     "build:css": "tailwindcss -i src/styles.css -o dist/styles.css --minify",
     "dev": "tsup --watch",
     "prepublishOnly": "npm run build && npm test",
