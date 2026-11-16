@@ -14,10 +14,12 @@ An embeddable React admin UI for a self-hosted [Svix](https://www.svix.com/) web
 ## Installation
 
 ```bash
-npm install @srayner02/svix-admin svix
+npm install @srayner02/svix-admin svix zod react-hook-form @hookform/resolvers
 ```
 
 > The `svix` package is needed both by the library's route handler and by your own server code when firing webhook events.
+>
+> `zod` (v4), `react-hook-form` and `@hookform/resolvers` are peer dependencies: the library uses your app's copies rather than installing its own.
 
 ## Quick Start
 
