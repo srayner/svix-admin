@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { webhookFormSchema } from './schemas'
+import { z } from 'zod'
+import { appSettingsSchema, webhookFormSchema } from './schemas'
 
 const valid = {
   url: 'https://example.com/webhook',
@@ -18,7 +19,7 @@ describe('webhookFormSchema', () => {
     const result = webhookFormSchema.safeParse({ ...valid, url: 'not-a-url' })
     expect(result.success).toBe(false)
     if (!result.success) {
-      expect(result.error.flatten().fieldErrors.url).toBeDefined()
+      expect(z.flattenError(result.error).fieldErrors.url).toBeDefined()
     }
   })
 
@@ -26,7 +27,7 @@ describe('webhookFormSchema', () => {
     const result = webhookFormSchema.safeParse({ ...valid, eventTypes: [] })
     expect(result.success).toBe(false)
     if (!result.success) {
-      expect(result.error.flatten().fieldErrors.eventTypes).toBeDefined()
+      expect(z.flattenError(result.error).fieldErrors.eventTypes).toBeDefined()
     }
   })
 
@@ -38,7 +39,7 @@ describe('webhookFormSchema', () => {
     })
     expect(result.success).toBe(false)
     if (!result.success) {
-      expect(result.error.flatten().fieldErrors.bearerToken).toBeDefined()
+      expect(z.flattenError(result.error).fieldErrors.bearerToken).toBeDefined()
     }
   })
 
@@ -56,7 +57,7 @@ describe('webhookFormSchema', () => {
     })
     expect(result.success).toBe(false)
     if (!result.success) {
-      expect(result.error.flatten().fieldErrors.basicUsername).toBeDefined()
+      expect(z.flattenError(result.error).fieldErrors.basicUsername).toBeDefined()
     }
   })
 
@@ -87,5 +88,38 @@ describe('webhookFormSchema', () => {
         customHeaders: [{ key: 'X-Api-Key', value: 'secret' }],
       }).success
     ).toBe(true)
+  })
+})
+
+// The exact text each form shows under an invalid field. Pinned so that a change of
+// validation library or API can't silently swap them for the library's default wording.
+describe('validation messages', () => {
+  /** Messages for each path in the failed result, keyed like "customHeaders.0.key". */
+  function messagesByPath(result: { success: boolean; error?: z.ZodError }) {
+    expect(result.success).toBe(false)
+    return Object.fromEntries(result.error!.issues.map((i) => [i.path.join('.'), i.message]))
+  }
+
+  it.each([
+    { path: 'url', override: { url: 'not-a-url' }, message: 'Must be a valid URL' },
+    { path: 'eventTypes', override: { eventTypes: [] }, message: 'Select at least one event type' },
+    { path: 'bearerToken', override: { authMethod: 'bearer', bearerToken: '' }, message: 'Bearer token is required' },
+    { path: 'basicUsername', override: { authMethod: 'basic', basicUsername: '  ' }, message: 'Username is required' },
+    { path: 'customHeaders.0.key', override: { customHeaders: [{ key: '', value: 'v' }] }, message: 'Header name required' },
+    { path: 'customHeaders.0.value', override: { customHeaders: [{ key: 'k', value: '' }] }, message: 'Header value required' },
+  ])('webhook form: $path shows "$message"', ({ path, override, message }) => {
+    expect(messagesByPath(webhookFormSchema.safeParse({ ...valid, ...override }))).toEqual({
+      [path]: message,
+    })
+  })
+
+  it('app settings: an empty name shows "App name is required"', () => {
+    expect(messagesByPath(appSettingsSchema.safeParse({ name: '' }))).toEqual({
+      name: 'App name is required',
+    })
+  })
+
+  it('app settings: accepts a non-empty name', () => {
+    expect(appSettingsSchema.safeParse({ name: 'Oxygen' }).success).toBe(true)
   })
 })

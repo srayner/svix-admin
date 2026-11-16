@@ -3,15 +3,12 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './ui/form'
 import { Input } from './ui/input'
 import { Button } from './ui/button'
-
-const schema = z.object({
-  name: z.string().min(1, { message: 'App name is required' }),
-})
+import { appSettingsSchema } from '../lib/schemas'
+import type { AppSettingsSchema } from '../lib/schemas'
 
 interface Props {
   currentName: string
@@ -22,9 +19,9 @@ interface Props {
 export function AppSettings({ currentName, appId, onRename }: Props) {
   const [saved, setSaved] = useState(false)
 
-  const form = useForm({ resolver: zodResolver(schema), defaultValues: { name: currentName } })
+  const form = useForm<AppSettingsSchema>({ resolver: zodResolver(appSettingsSchema), defaultValues: { name: currentName } })
 
-  async function handleSubmit({ name }: { name: string }) {
+  async function handleSubmit({ name }: AppSettingsSchema) {
     await onRename(name)
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
